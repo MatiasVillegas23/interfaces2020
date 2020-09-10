@@ -153,9 +153,14 @@ $(document).ready(function() {
 
     let descargar = document.querySelector('#descargar');
     descargar.addEventListener("click", function() {
-        let dato = canvas.toDataURL("image/jpeg");
-        dato = dato.replace("image/jpeg", "image/octet-stream");
-        document.location.href = dato;
+        // Crear un elemento <a>
+        let enlace = document.createElement('a');
+        // El título
+        enlace.download = "imagen.png";
+        // Convertir la imagen a Base64 y ponerlo en el enlace
+        enlace.href = canvas.toDataURL();
+        // Hacer click en él
+        enlace.click();
     }, false);
 
 });
