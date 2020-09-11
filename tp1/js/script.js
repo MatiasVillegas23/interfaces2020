@@ -15,6 +15,7 @@ $(document).ready(function() {
     document.querySelector("#gris").onclick = filtroGris;
     document.querySelector("#negativo").onclick = filtroNegativo;
     document.querySelector("#bn").onclick = filtroBN;
+    document.querySelector("#sepia").onclick = filtroSepia;
     // document.querySelector('#gris').click(filtroGris);
 
     // clear canvas
@@ -138,6 +139,31 @@ $(document).ready(function() {
         }
     }
 
+    function filtroSepia() {
+        if ((!!globalImage) && (filtroActual != "sepia")) {
+            filtroActual = "sepia";
+            let imageData = context.getImageData(0, 0, globalImage.width, globalImage.height);
+            for (let x = 0; x < globalImage.width; x++) {
+                for (let y = 0; y < globalImage.height; y++) {
+
+                    let r = getRed(imageData, x, y);
+                    let g = getGreen(imageData, x, y);
+                    let b = getBlue(imageData, x, y);
+                    let a = 255;
+                    let r2 = 0.393 * r + 0.769 * g + 0.189 + b;
+                    let g2 = 0.349 * r + 0.686 * g + 0.168 + b;
+                    let b2 = 0.272 * r + 0.534 * g + 0.131 + b;
+                    if (r2 > 255) r2 = 255;
+                    if (g2 > 255) g2 = 255;
+                    if (b2 > 255) b2 = 255;
+
+                    setPixel(imageData, x, y, r2, g2, b2, a);
+                }
+            }
+            context.putImageData(imageData, 0, 0);
+        }
+    }
+
     function setPixel(imageData, x, y, r, g, b, a) {
 
         let index = (x + y * imageData.width) * 4;
@@ -165,6 +191,7 @@ $(document).ready(function() {
     function cleanCanvas() { //setea el canvas en color por defecto
         context.fillStyle = '#024359';
         context.fillRect(0, 0, canvas.width, canvas.height);
+        filtroActual = "";
     }
 
     //todo lo del paint
