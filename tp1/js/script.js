@@ -1,13 +1,21 @@
 $(document).ready(function() {
+    "use strict";
 
     //get component references
     let canvas = document.querySelector('#canvas');
     let input = document.querySelector('.input1');
+    let globalImage = "";
+    let filtroActual = "";
     //paint references
     let downFlag = false;
     let color = document.querySelector('#color');
+    document.querySelector('#goma').onclick = setGoma;
+    document.querySelector('#clean').onclick = cleanCanvas;
     //filters references
-    document.querySelector('#gris').click(filtroGris);
+    document.querySelector("#gris").onclick = filtroGris;
+    document.querySelector("#negativo").onclick = filtroNegativo;
+    document.querySelector("#bn").onclick = filtroBN;
+    // document.querySelector('#gris').click(filtroGris);
 
     // clear canvas
     let context = canvas.getContext('2d');
@@ -29,69 +37,105 @@ $(document).ready(function() {
             let content = readerEvent.target.result; // this is the content!
 
             let image = new Image();
-            //image.crossOrigin = 'Anonymous';
 
             image.src = content;
 
             image.onload = function() {
 
+                globalImage = this;
                 let imageAspectRatio = (1.0 * this.height) / this.width;
                 let imageScaledWidth = canvas.width;
                 let imageScaledHeight = canvas.width * imageAspectRatio;
                 let maxWidth = canvas.width;
                 let maxHeight = canvas.height;
 
-                /* if (this.width > maxWidth) {
-                     AspectRatio = (1.0 * maxWidth) / this.width;
-                     imageScaledWidth = maxWidth;
-                     imageScaledHeight = this.height * AspectRatio;
-                 }
-                 if (this.height > maxHeight) {
-                     AspectRatio = (1.0 * maxHeight) / this.height;
-                     imageScaledWidth = this.width * AspectRatio;
-                     imageScaledHeight = maxHeight;
-                 }*/
-
-                // draw image on canvas
-                context.drawImage(this, 0, 0, imageScaledWidth, imageScaledHeight);
-
-                // get imageData from content of canvas
-                let imageData = context.getImageData(0, 0, imageScaledWidth, imageScaledHeight);
-
-                // modify imageData
-                for (let j = 0; j < imageData.height; j++) {
-                    for (let i = 0; i < imageData.width; i++) {
-                        if (i % 2 == 0) {
-                            let index = (i + imageData.width * j) * 4;
-                            imageData.data[index + 0] = 0;
-                            imageData.data[index + 1] = 0;
-                            imageData.data[index + 2] = 0;
-                        }
-                    }
+                if (this.width > maxWidth) {
+                    imageAspectRatio = (1.0 * maxWidth) / this.width;
+                    imageScaledWidth = maxWidth;
+                    imageScaledHeight = this.height * imageAspectRatio;
+                }
+                if (this.height > maxHeight) {
+                    imageAspectRatio = (1.0 * maxHeight) / this.height;
+                    imageScaledWidth = this.width * imageAspectRatio;
+                    imageScaledHeight = maxHeight;
                 }
 
-                // draw the modified image
-                context.putImageData(imageData, 0, 0);
+                // draw image on canvas
+                cleanCanvas();
+                context.drawImage(this, 0, 0, imageScaledWidth, imageScaledHeight);
             }
         }
     }
 
     function filtroGris() {
-        let imageData = context.getImageData(0, 0, imageScaledWidth, imageScaledHeight);
-        for (let x = 0; x < image.width; x++) {
-            for (let y = 0; y < image.height; y++) {
-                let r = getRed(imageData, x, y);
-                //console.log(r);
-                let g = getGreen(imageData, x, y);
-                //console.log(g);
-                let b = getBlue(imageData, x, y);
-                //console.log(b);
-                let a = 255;
-                let c = (r + g + b) / 3;
-                setPixel(imageData, x, y, c, c, c, a);
+        if ((!!globalImage) && (filtroActual != "gris")) {
+            filtroActual = "gris";
+            let imageData = context.getImageData(0, 0, globalImage.width, globalImage.height);
+            for (let x = 0; x < globalImage.width; x++) {
+                for (let y = 0; y < globalImage.height; y++) {
+                    let r = getRed(imageData, x, y);
+                    //console.log(r);
+                    let g = getGreen(imageData, x, y);
+                    //console.log(g);
+                    let b = getBlue(imageData, x, y);
+                    //console.log(b);
+                    let a = 255;
+                    let c = (r + g + b) / 3;
+                    setPixel(imageData, x, y, c, c, c, a);
+                }
             }
+            context.putImageData(imageData, 0, 0);
         }
-        context.putImageData(imageData, 0, 0);
+    }
+
+    function filtroBN() {
+        if ((!!globalImage) && (filtroActual != "bn")) {
+            filtroActual = "bn";
+            let imageData = context.getImageData(0, 0, globalImage.width, globalImage.height);
+            for (let x = 0; x < globalImage.width; x++) {
+                for (let y = 0; y < globalImage.height; y++) {
+
+                    let r = getRed(imageData, x, y);
+                    let g = getGreen(imageData, x, y);
+                    let b = getBlue(imageData, x, y);
+                    let a = 255;
+                    if ((r + g + b) / 3 < 128) {
+                        r = 0;
+                        g = 0;
+                        b = 0;
+                    } else {
+                        r = 255;
+                        g = 255;
+                        b = 255;
+                    }
+
+                    setPixel(imageData, x, y, r, g, b, a);
+                }
+            }
+            context.putImageData(imageData, 0, 0);
+        }
+    }
+
+    function filtroNegativo() {
+        if ((!!globalImage) && (filtroActual != "negativo")) {
+            filtroActual = "negativo";
+            let imageData = context.getImageData(0, 0, globalImage.width, globalImage.height);
+            for (let x = 0; x < globalImage.width; x++) {
+                for (let y = 0; y < globalImage.height; y++) {
+
+                    let r = getRed(imageData, x, y);
+                    let g = getGreen(imageData, x, y);
+                    let b = getBlue(imageData, x, y);
+                    let a = 255;
+                    let r2 = 255 - r;
+                    let g2 = 255 - g;
+                    let b2 = 255 - b;
+
+                    setPixel(imageData, x, y, r2, g2, b2, a);
+                }
+            }
+            context.putImageData(imageData, 0, 0);
+        }
     }
 
     function setPixel(imageData, x, y, r, g, b, a) {
@@ -118,7 +162,16 @@ $(document).ready(function() {
         return imageData.data[index + 2];
     }
 
+    function cleanCanvas() { //setea el canvas en color por defecto
+        context.fillStyle = '#024359';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
     //todo lo del paint
+
+    function setGoma() {
+        color.value = "#ffffff";
+    }
 
     color.addEventListener("change", watchColorPicker, false);
 

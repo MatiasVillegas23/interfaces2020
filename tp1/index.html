@@ -17,15 +17,22 @@
     <div class="boton">
         <button type="button" class="btn btn-dark" onclick="document.querySelector('.input1').click();">Select Imagen ...</button>
         <input class="input1" type="file" style="display: none;" accept="image/*">
-        <button type="button" class="btn btn-dark" id="descargar">Descargar</button>
-        <input type="color" value="#ff0000" id="color">
+        <button type="button" class="btn btn-dark" id="clean">Limpiar Todo</button>
         <button type="button" class="btn btn-dark" id="gris">Filtro Gris</button>
+        <button type="button" class="btn btn-dark" id="bn">Filtro Binario</button>
+        <button type="button" class="btn btn-dark" id="negativo">Filtro Negativo</button>
+        <button type="button" class="btn btn-dark" id="descargar">Descargar</button>
+    </div>
+    <div class="boton">
+        <p>Seleccione Color o Goma de borrar</p>
+        <input type="color" value="#ff0000" id="color">
+        <input type="button" value="Goma" id="goma">
     </div>
 
     <div class="container-fliud detalles">
         <div class="row well">
             <div class="col-md-12 col-sm-12 col-xs-12">
-                <canvas id="canvas" width="1920" height="1080" tyle="border:1px solid #000000;">
+                <canvas id="canvas" width="900" height="600" tyle="border:1px solid #000000;">
 				</canvas>
             </div>
         </div>
