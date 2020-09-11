@@ -13,10 +13,11 @@ $(document).ready(function() {
     document.querySelector('#clean').onclick = cleanCanvas;
     //filters references
     document.querySelector("#gris").onclick = filtroGris;
-    document.querySelector("#negativo").onclick = filtroNegativo;
     document.querySelector("#bn").onclick = filtroBN;
+    document.querySelector("#negativo").onclick = filtroNegativo;
     document.querySelector("#sepia").onclick = filtroSepia;
-    // document.querySelector('#gris').click(filtroGris);
+    let brightness = document.querySelector("#brillo");
+    brightness.addEventListener("change", filtroBrillo, false);
 
     // clear canvas
     let context = canvas.getContext('2d');
@@ -164,6 +165,30 @@ $(document).ready(function() {
         }
     }
 
+    function filtroBrillo() {
+        if ((!!globalImage)) {
+            filtroActual = "brillo";
+            let imageData = context.getImageData(0, 0, globalImage.width, globalImage.height);
+            let value = brightness.value * 1.0 * 256 - 128;
+            for (let x = 0; x < globalImage.width; x++) {
+                for (let y = 0; y < globalImage.height; y++) {
+
+                    let r = getRed(imageData, x, y);
+                    let g = getGreen(imageData, x, y);
+                    let b = getBlue(imageData, x, y);
+                    let a = 255;
+
+                    let r3 = trunc(value + r);
+                    let g3 = trunc(value + g);
+                    let b3 = trunc(value + b);
+
+                    setPixel(imageData, x, y, r3, g3, b3, a);
+                }
+            }
+            context.putImageData(imageData, 0, 0);
+        }
+    }
+
     function setPixel(imageData, x, y, r, g, b, a) {
 
         let index = (x + y * imageData.width) * 4;
@@ -186,6 +211,14 @@ $(document).ready(function() {
     function getBlue(imageData, x, y) {
         let index = (x + y * imageData.width) * 4;
         return imageData.data[index + 2];
+    }
+
+    function trunc(value) {
+        if (value < 0)
+            return 0;
+        if (value > 255)
+            return 255;
+        else return value;
     }
 
     function cleanCanvas() { //setea el canvas en color por defecto
