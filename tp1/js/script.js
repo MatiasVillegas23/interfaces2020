@@ -12,12 +12,15 @@ $(document).ready(function() {
     document.querySelector('#goma').onclick = setGoma;
     document.querySelector('#clean').onclick = cleanCanvas;
     //filters references
+    document.querySelector("#original").onclick = original;
     document.querySelector("#gris").onclick = filtroGris;
     document.querySelector("#bn").onclick = filtroBN;
     document.querySelector("#negativo").onclick = filtroNegativo;
     document.querySelector("#sepia").onclick = filtroSepia;
     let brightness = document.querySelector("#brillo");
     brightness.addEventListener("change", filtroBrillo, false);
+    let saturation = document.querySelector("#saturacion");
+    saturation.addEventListener("change", filtroSaturacion, false);
 
     // clear canvas
     let context = canvas.getContext('2d');
@@ -44,7 +47,6 @@ $(document).ready(function() {
 
             image.onload = function() {
 
-                globalImage = this;
                 let imageAspectRatio = (1.0 * this.height) / this.width;
                 let imageScaledWidth = canvas.width;
                 let imageScaledHeight = canvas.width * imageAspectRatio;
@@ -65,14 +67,35 @@ $(document).ready(function() {
                 // draw image on canvas
                 cleanCanvas();
                 context.drawImage(this, 0, 0, imageScaledWidth, imageScaledHeight);
+                globalImage = context.getImageData(0, 0, canvas.width, canvas.height);
             }
+        }
+    }
+
+    function original() {
+        if ((!!globalImage) && (filtroActual != "original")) {
+            filtroActual = "original";
+            let imageData = Object.assign(globalImage);
+            for (let x = 0; x < globalImage.width; x++) {
+                for (let y = 0; y < globalImage.height; y++) {
+                    let r = getRed(globalImage, x, y);
+                    //console.log(r);
+                    let g = getGreen(globalImage, x, y);
+                    //console.log(g);
+                    let b = getBlue(globalImage, x, y);
+                    //console.log(b);
+                    let a = 255;
+                    setPixel(globalImage, x, y, r, g, b, a);
+                }
+            }
+            context.putImageData(globalImage, 0, 0);
         }
     }
 
     function filtroGris() {
         if ((!!globalImage) && (filtroActual != "gris")) {
             filtroActual = "gris";
-            let imageData = context.getImageData(0, 0, globalImage.width, globalImage.height);
+            let imageData = copyImageData(context, globalImage);
             for (let x = 0; x < globalImage.width; x++) {
                 for (let y = 0; y < globalImage.height; y++) {
                     let r = getRed(imageData, x, y);
@@ -93,7 +116,7 @@ $(document).ready(function() {
     function filtroBN() {
         if ((!!globalImage) && (filtroActual != "bn")) {
             filtroActual = "bn";
-            let imageData = context.getImageData(0, 0, globalImage.width, globalImage.height);
+            let imageData = copyImageData(context, globalImage);
             for (let x = 0; x < globalImage.width; x++) {
                 for (let y = 0; y < globalImage.height; y++) {
 
@@ -121,7 +144,7 @@ $(document).ready(function() {
     function filtroNegativo() {
         if ((!!globalImage) && (filtroActual != "negativo")) {
             filtroActual = "negativo";
-            let imageData = context.getImageData(0, 0, globalImage.width, globalImage.height);
+            let imageData = copyImageData(context, globalImage);
             for (let x = 0; x < globalImage.width; x++) {
                 for (let y = 0; y < globalImage.height; y++) {
 
@@ -143,7 +166,7 @@ $(document).ready(function() {
     function filtroSepia() {
         if ((!!globalImage) && (filtroActual != "sepia")) {
             filtroActual = "sepia";
-            let imageData = context.getImageData(0, 0, globalImage.width, globalImage.height);
+            let imageData = copyImageData(context, globalImage);
             for (let x = 0; x < globalImage.width; x++) {
                 for (let y = 0; y < globalImage.height; y++) {
 
@@ -168,7 +191,7 @@ $(document).ready(function() {
     function filtroBrillo() {
         if ((!!globalImage)) {
             filtroActual = "brillo";
-            let imageData = context.getImageData(0, 0, globalImage.width, globalImage.height);
+            let imageData = copyImageData(context, globalImage);
             let value = brightness.value * 1.0 * 256 - 128;
             for (let x = 0; x < globalImage.width; x++) {
                 for (let y = 0; y < globalImage.height; y++) {
@@ -187,6 +210,115 @@ $(document).ready(function() {
             }
             context.putImageData(imageData, 0, 0);
         }
+    }
+
+    function filtroSaturacion() {
+        if ((!!globalImage)) {
+            filtroActual = "saturacion";
+            let imageData = copyImageData(context, globalImage);
+            let value = saturation.value;
+            for (let x = 0; x < globalImage.width; x++) {
+                for (let y = 0; y < globalImage.height; y++) {
+
+                    let r = getRed(imageData, x, y);
+                    let g = getGreen(imageData, x, y);
+                    let b = getBlue(imageData, x, y);
+                    let a = 255;
+
+                    let hsv = rgb2hsv(r, g, b);
+                    hsv.s = value;
+                    if (hsv.s > 100) hsv.s = 100;
+                    let rgb = HSVtoRGB(hsv.h, hsv.s, hsv.v);
+
+                    let r3 = rgb.r;
+                    let g3 = rgb.g;
+                    let b3 = rgb.b;
+
+                    setPixel(imageData, x, y, r3, g3, b3, a);
+                }
+            }
+            context.putImageData(imageData, 0, 0);
+        }
+    }
+
+    function rgb2hsv(r, g, b) {
+        let rabs, gabs, babs, rr, gg, bb, h, s, v, diff, diffc, percentRoundFn;
+        rabs = r / 255;
+        gabs = g / 255;
+        babs = b / 255;
+        v = Math.max(rabs, gabs, babs),
+            diff = v - Math.min(rabs, gabs, babs);
+        diffc = c => (v - c) / 6 / diff + 1 / 2;
+        percentRoundFn = num => Math.round(num * 100) / 100;
+        if (diff == 0) {
+            h = s = 0;
+        } else {
+            s = diff / v;
+            rr = diffc(rabs);
+            gg = diffc(gabs);
+            bb = diffc(babs);
+
+            if (rabs === v) {
+                h = bb - gg;
+            } else if (gabs === v) {
+                h = (1 / 3) + rr - bb;
+            } else if (babs === v) {
+                h = (2 / 3) + gg - rr;
+            }
+            if (h < 0) {
+                h += 1;
+            } else if (h > 1) {
+                h -= 1;
+            }
+        }
+        return {
+            h: Math.round(h * 360),
+            s: percentRoundFn(s * 100),
+            v: percentRoundFn(v * 100)
+        };
+    }
+
+    function HSVtoRGB(h, s, v) {
+        var r, g, b, i, f, p, q, t;
+        if (arguments.length === 1) {
+            s = h.s, v = h.v, h = h.h;
+        }
+        i = Math.floor(h * 6);
+        f = h * 6 - i;
+        p = v * (1 - s);
+        q = v * (1 - f * s);
+        t = v * (1 - (1 - f) * s);
+        switch (i % 6) {
+            case 0:
+                r = v, g = t, b = p;
+                break;
+            case 1:
+                r = q, g = v, b = p;
+                break;
+            case 2:
+                r = p, g = v, b = t;
+                break;
+            case 3:
+                r = p, g = q, b = v;
+                break;
+            case 4:
+                r = t, g = p, b = v;
+                break;
+            case 5:
+                r = v, g = p, b = q;
+                break;
+        }
+        return {
+            r: Math.round(r * 255),
+            g: Math.round(g * 255),
+            b: Math.round(b * 255)
+        };
+    }
+
+    function copyImageData(ctx, src) {
+        let dst = ctx.createImageData(src.width, src.height);
+        dst.data.set(src.data);
+        return dst;
     }
 
     function setPixel(imageData, x, y, r, g, b, a) {

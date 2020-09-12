@@ -14,19 +14,34 @@
         <span class="navbar-brand mb-0 h1">Almost Paint</span>
     </nav>
 
-    <div class="boton">
+    <div class="botones">
         <button type="button" class="btn btn-dark" onclick="document.querySelector('.input1').click();">Select Imagen ...</button>
         <input class="input1" type="file" style="display: none;" accept="image/*">
-        <button type="button" class="btn btn-dark" id="clean">Limpiar Todo</button>
-        <button type="button" class="btn btn-dark" id="gris">Filtro Gris</button>
-        <button type="button" class="btn btn-dark" id="bn">Filtro Binario</button>
-        <button type="button" class="btn btn-dark" id="negativo">Filtro Negativo</button>
-        <button type="button" class="btn btn-dark" id="sepia">Filtro Sepia</button>
         <button type="button" class="btn btn-dark" id="descargar">Descargar</button>
-        <p style="text-align: center;">Brillo</p>
-        <input type="range" min="0" max="1" value="0.5" step="0.01" class="slider" id="brillo">
     </div>
-    <div class="boton">
+    <div class="dropdown botones">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Filtros
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+
+            <button type="button" class="dropdown-item" id="original">Original</button>
+            <button type="button" class="dropdown-item" id="clean">Limpiar Todo</button>
+            <button type="button" class="dropdown-item" id="gris">Filtro Gris</button>
+            <button type="button" class="dropdown-item" id="bn">Filtro Binario</button>
+            <button type="button" class="dropdown-item" id="negativo">Filtro Negativo</button>
+            <button type="button" class="dropdown-item" id="sepia">Filtro Sepia</button>
+
+        </div>
+        <div class="botones">
+            <p>Brillo</p>
+            <input type="range" min="0" max="1" value="0.5" step="0.01" class="slider" id="brillo">
+            <p>Saturacion</p>
+            <input type="range" min="0" max="100" value="50" step="1" class="slider" id="saturacion">
+        </div>
+    </div>
+
+    <div class="botones">
         <p>Seleccione Color o Goma de borrar</p>
         <input type="color" value="#ff0000" id="color">
         <input type="button" value="Goma" id="goma">
@@ -35,7 +50,7 @@
     <div class="container-fliud detalles">
         <div class="row well">
             <div class="col-md-12 col-sm-12 col-xs-12">
-                <canvas id="canvas" width="900" height="600" tyle="border:1px solid #000000;">
+                <canvas id="canvas" width="1200" height="600" tyle="border:1px solid #000000;">
 				</canvas>
             </div>
         </div>
