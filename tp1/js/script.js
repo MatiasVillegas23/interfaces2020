@@ -226,14 +226,10 @@ $(document).ready(function() {
                     let a = 255;
 
                     let hsv = RGBtoHSV(r, g, b);
+
                     hsv.s = value;
-                    if ((x == 1) && (y == 1)) {
-                        console.log("rgb: " + r, g, b);
-                        console.log("hsv: " + hsv.h, hsv.s, hsv.v);
-                    }
-                    //if (hsv.s > 100) hsv.s = 100;
+
                     let rgb = HSVtoRGB(hsv.h, hsv.s, hsv.v);
-                    if ((x == 1) && (y == 1)) console.log("rgb c: " + Math.round(rgb.r), Math.round(rgb.g), Math.round(rgb.b));
 
                     setPixel(imageData, x, y, Math.round(rgb.r), Math.round(rgb.g), Math.round(rgb.b), a);
                 }
@@ -241,11 +237,10 @@ $(document).ready(function() {
             context.putImageData(imageData, 0, 0);
         }
     }
-    let cont = 0; //BORRAR ESTO
 
     function RGBtoHSV(r1, g1, b1) {
         let r, g, b, h, s, v;
-        cont++;
+
         r = r1 / 255;
         g = g1 / 255;
         b = b1 / 255;
@@ -255,8 +250,8 @@ $(document).ready(function() {
 
         let delta = cmax - cmin;
 
-        v = cmax;
-        if (cont == 1) console.log(cmax, cmin, r, g, b);
+        v = Math.round(cmax * 100);
+
         if (cmax == 0)
             s = 0;
         else
@@ -267,18 +262,19 @@ $(document).ready(function() {
                 h = 0;
                 break;
             case r:
-                h = 60 * ((Math.abs(g - b) / delta) % 6);
+                h = Math.abs(60 * (((g - b) / delta) % 6));
                 break;
             case g:
-                h = 60 * (Math.abs(b - r) / delta + 2);
+                h = Math.abs(60 * (((b - r) / delta) + 2));
                 break;
             case b:
-                h = 60 * (Math.abs(r - g) / delta + 4);
+                h = Math.abs(60 * (((r - g) / delta) + 4));
                 break;
         }
+
         return {
-            h: h,
-            s: s,
+            h: Math.round(h),
+            s: Math.round(s * 100),
             v: v
         };
     }
@@ -287,40 +283,40 @@ $(document).ready(function() {
         let c, x, m, r, g, b;
 
         s = s / 100;
-
+        v = v / 100;
         c = v * s;
 
-        x = c * (1 - Math.abs((h / 60)) % 2 - 1);
+        x = c * (1 - Math.abs(((h / 60) % 2) - 1));
 
         m = v - c;
 
         switch (true) {
-            case (0 <= h < 60):
+            case (0 <= h && h < 60):
                 r = c;
                 g = x;
                 b = 0;
                 break;
-            case (60 <= h < 120):
+            case (60 <= h && h < 120):
                 r = x;
                 g = c;
                 b = 0;
                 break;
-            case (120 <= h < 180):
+            case (120 <= h && h < 180):
                 r = 0;
                 g = c;
                 b = x;
                 break;
-            case (180 <= h < 240):
+            case (180 <= h && h < 240):
                 r = 0;
                 g = x;
                 b = c;
                 break;
-            case (240 <= h < 300):
+            case (240 <= h && h < 300):
                 r = x;
                 g = 0;
                 b = c;
                 break;
-            case (300 <= h < 360):
+            case (300 <= h && hh < 360):
                 r = c;
                 g = 0;
                 b = x;
@@ -330,84 +326,11 @@ $(document).ready(function() {
         g = (g + m) * 255;
         b = (b + m) * 255;
         return {
-            r: r,
-            g: g,
-            b: b
+            r: Math.round(r),
+            g: Math.round(g),
+            b: Math.round(b)
         };
     }
-    /*function rgb2hsv(r, g, b) {
-        let rabs, gabs, babs, rr, gg, bb, h, s, v, diff, diffc, percentRoundFn;
-        rabs = r / 255;
-        gabs = g / 255;
-        babs = b / 255;
-        v = Math.max(rabs, gabs, babs),
-            diff = v - Math.min(rabs, gabs, babs);
-        diffc = c => (v - c) / 6 / diff + 1 / 2;
-        percentRoundFn = num => Math.round(num * 100) / 100;
-        if (diff == 0) {
-            h = s = 0;
-        } else {
-            s = diff / v;
-            rr = diffc(rabs);
-            gg = diffc(gabs);
-            bb = diffc(babs);
-
-            if (rabs === v) {
-                h = bb - gg;
-            } else if (gabs === v) {
-                h = (1 / 3) + rr - bb;
-            } else if (babs === v) {
-                h = (2 / 3) + gg - rr;
-            }
-            if (h < 0) {
-                h += 1;
-            } else if (h > 1) {
-                h -= 1;
-            }
-        }
-        return {
-            h: Math.round(h * 360),
-            s: percentRoundFn(s * 100),
-            v: percentRoundFn(v * 100)
-        };
-    }*/
-
-    /*function HSVtoRGB(h, s, v) {
-        var r, g, b, i, f, p, q, t;
-        if (arguments.length === 1) {
-            s = h.s, v = h.v, h = h.h;
-        }
-        i = Math.floor(h * 6);
-        f = h * 6 - i;
-        p = v * (1 - s);
-        q = v * (1 - f * s);
-        t = v * (1 - (1 - f) * s);
-        switch (i % 6) {
-            case 0:
-                r = v, g = t, b = p;
-                break;
-            case 1:
-                r = q, g = v, b = p;
-                break;
-            case 2:
-                r = p, g = v, b = t;
-                break;
-            case 3:
-                r = p, g = q, b = v;
-                break;
-            case 4:
-                r = t, g = p, b = v;
-                break;
-            case 5:
-                r = v, g = p, b = q;
-                break;
-        }
-        return {
-            r: Math.round(r * 255),
-            g: Math.round(g * 255),
-            b: Math.round(b * 255)
-        };
-    }*/
 
     function copyImageData(ctx, src) {
         let dst = ctx.createImageData(src.width, src.height);
