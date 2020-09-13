@@ -432,7 +432,7 @@ $(document).ready(function() {
         else return value;
     }
 
-    function cleanCanvas() { //setea el canvas en color por defecto
+    function cleanCanvas() { //resetea el canvas al color por defecto
         context.fillStyle = '#024359';
         context.fillRect(0, 0, canvas.width, canvas.height);
         filtroActual = "";
