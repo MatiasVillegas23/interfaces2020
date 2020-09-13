@@ -225,23 +225,117 @@ $(document).ready(function() {
                     let b = getBlue(imageData, x, y);
                     let a = 255;
 
-                    let hsv = rgb2hsv(r, g, b);
+                    let hsv = RGBtoHSV(r, g, b);
                     hsv.s = value;
-                    if (hsv.s > 100) hsv.s = 100;
+                    if ((x == 1) && (y == 1)) {
+                        console.log("rgb: " + r, g, b);
+                        console.log("hsv: " + hsv.h, hsv.s, hsv.v);
+                    }
+                    //if (hsv.s > 100) hsv.s = 100;
                     let rgb = HSVtoRGB(hsv.h, hsv.s, hsv.v);
+                    if ((x == 1) && (y == 1)) console.log("rgb c: " + Math.round(rgb.r), Math.round(rgb.g), Math.round(rgb.b));
 
-                    let r3 = rgb.r;
-                    let g3 = rgb.g;
-                    let b3 = rgb.b;
-
-                    setPixel(imageData, x, y, r3, g3, b3, a);
+                    setPixel(imageData, x, y, Math.round(rgb.r), Math.round(rgb.g), Math.round(rgb.b), a);
                 }
             }
             context.putImageData(imageData, 0, 0);
         }
     }
+    let cont = 0; //BORRAR ESTO
 
-    function rgb2hsv(r, g, b) {
+    function RGBtoHSV(r1, g1, b1) {
+        let r, g, b, h, s, v;
+        cont++;
+        r = r1 / 255;
+        g = g1 / 255;
+        b = b1 / 255;
+
+        let cmax = Math.max(r, g, b);
+        let cmin = Math.min(r, g, b);
+
+        let delta = cmax - cmin;
+
+        v = cmax;
+        if (cont == 1) console.log(cmax, cmin, r, g, b);
+        if (cmax == 0)
+            s = 0;
+        else
+            s = delta / cmax;
+
+        switch (cmax) {
+            case cmin:
+                h = 0;
+                break;
+            case r:
+                h = 60 * ((Math.abs(g - b) / delta) % 6);
+                break;
+            case g:
+                h = 60 * (Math.abs(b - r) / delta + 2);
+                break;
+            case b:
+                h = 60 * (Math.abs(r - g) / delta + 4);
+                break;
+        }
+        return {
+            h: h,
+            s: s,
+            v: v
+        };
+    }
+
+    function HSVtoRGB(h, s, v) {
+        let c, x, m, r, g, b;
+
+        s = s / 100;
+
+        c = v * s;
+
+        x = c * (1 - Math.abs((h / 60)) % 2 - 1);
+
+        m = v - c;
+
+        switch (true) {
+            case (0 <= h < 60):
+                r = c;
+                g = x;
+                b = 0;
+                break;
+            case (60 <= h < 120):
+                r = x;
+                g = c;
+                b = 0;
+                break;
+            case (120 <= h < 180):
+                r = 0;
+                g = c;
+                b = x;
+                break;
+            case (180 <= h < 240):
+                r = 0;
+                g = x;
+                b = c;
+                break;
+            case (240 <= h < 300):
+                r = x;
+                g = 0;
+                b = c;
+                break;
+            case (300 <= h < 360):
+                r = c;
+                g = 0;
+                b = x;
+                break;
+        }
+        r = (r + m) * 255;
+        g = (g + m) * 255;
+        b = (b + m) * 255;
+        return {
+            r: r,
+            g: g,
+            b: b
+        };
+    }
+    /*function rgb2hsv(r, g, b) {
         let rabs, gabs, babs, rr, gg, bb, h, s, v, diff, diffc, percentRoundFn;
         rabs = r / 255;
         gabs = g / 255;
@@ -276,9 +370,9 @@ $(document).ready(function() {
             s: percentRoundFn(s * 100),
             v: percentRoundFn(v * 100)
         };
-    }
+    }*/
 
-    function HSVtoRGB(h, s, v) {
+    /*function HSVtoRGB(h, s, v) {
         var r, g, b, i, f, p, q, t;
         if (arguments.length === 1) {
             s = h.s, v = h.v, h = h.h;
@@ -313,7 +407,7 @@ $(document).ready(function() {
             g: Math.round(g * 255),
             b: Math.round(b * 255)
         };
-    }
+    }*/
 
     function copyImageData(ctx, src) {
         let dst = ctx.createImageData(src.width, src.height);
