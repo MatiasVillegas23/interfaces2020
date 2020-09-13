@@ -6,11 +6,19 @@ $(document).ready(function() {
     let input = document.querySelector('.input1');
     let globalImage = "";
     let filtroActual = "";
+
     //paint references
     let downFlag = false;
     let color = document.querySelector('#color');
     document.querySelector('#goma').onclick = setGoma;
     document.querySelector('#clean').onclick = cleanCanvas;
+    document.querySelector('#lapiz').onclick = function() {
+        document.querySelector('#color').click();
+    }
+    document.querySelector('#botonGoma').onclick = function() {
+        document.querySelector('#goma').click();
+    }
+
     //filters references
     document.querySelector("#original").onclick = original;
     document.querySelector("#gris").onclick = filtroGris;
@@ -21,6 +29,26 @@ $(document).ready(function() {
     brightness.addEventListener("change", filtroBrillo, false);
     let saturation = document.querySelector("#saturacion");
     saturation.addEventListener("change", filtroSaturacion, false);
+
+    document.querySelector('#blur').addEventListener('click', function() {
+        let matriz = [
+            [1 / 9, 1 / 9, 1 / 9],
+            [1 / 9, 1 / 9, 1 / 9],
+            [1 / 9, 1 / 9, 1 / 9]
+        ];
+        let blur = "blur";
+        sobel(matriz, blur);
+    });
+
+    document.querySelector('#bordes').addEventListener('click', function() {
+        let matriz = [
+            [0, 1, 0],
+            [1, -4, 1],
+            [0, 1, 0],
+        ];
+        let blur = "bordes";
+        sobel(matriz, blur);
+    });
 
     // clear canvas
     let context = canvas.getContext('2d');
@@ -66,6 +94,8 @@ $(document).ready(function() {
 
                 // draw image on canvas
                 cleanCanvas();
+                canvas.width = imageScaledWidth;
+                canvas.height = imageScaledHeight;
                 context.drawImage(this, 0, 0, imageScaledWidth, imageScaledHeight);
                 globalImage = context.getImageData(0, 0, canvas.width, canvas.height);
             }
@@ -78,13 +108,12 @@ $(document).ready(function() {
             let imageData = Object.assign(globalImage);
             for (let x = 0; x < globalImage.width; x++) {
                 for (let y = 0; y < globalImage.height; y++) {
+
                     let r = getRed(globalImage, x, y);
-                    //console.log(r);
                     let g = getGreen(globalImage, x, y);
-                    //console.log(g);
                     let b = getBlue(globalImage, x, y);
-                    //console.log(b);
                     let a = 255;
+
                     setPixel(globalImage, x, y, r, g, b, a);
                 }
             }
@@ -98,14 +127,13 @@ $(document).ready(function() {
             let imageData = copyImageData(context, globalImage);
             for (let x = 0; x < globalImage.width; x++) {
                 for (let y = 0; y < globalImage.height; y++) {
+
                     let r = getRed(imageData, x, y);
-                    //console.log(r);
                     let g = getGreen(imageData, x, y);
-                    //console.log(g);
                     let b = getBlue(imageData, x, y);
-                    //console.log(b);
                     let a = 255;
                     let c = (r + g + b) / 3;
+
                     setPixel(imageData, x, y, c, c, c, a);
                 }
             }
@@ -332,6 +360,40 @@ $(document).ready(function() {
         };
     }
 
+    function sobel(matriz, filtro) {
+        if ((!!globalImage) && (filtroActual != filtro)) {
+            filtroActual = filtro;
+            let imageData = copyImageData(context, globalImage);
+            let r = 0;
+            let g = 0;
+            let b = 0;
+            let a = 255;
+
+            for (let x = 1; x < imageData.width - 1; x++) {
+                for (let y = 1; y < imageData.height - 1; y++) {
+                    promedioMatriz(x, y, matriz, r, g, b, a, imageData);
+                }
+            }
+            context.putImageData(imageData, 0, 0);
+        }
+    }
+
+    function promedioMatriz(x, y, matriz, r, g, b, a, imageData) {
+        r = getRed(globalImage, x - 1, y - 1) * matriz[0][0] + getRed(globalImage, x, y - 1) * matriz[0][1] + getRed(globalImage, x + 1, y - 1) * matriz[0][2] +
+            getRed(globalImage, x - 1, y) * matriz[1][0] + getRed(globalImage, x, y) * matriz[1][1] + getRed(globalImage, x + 1, y) * matriz[1][2] +
+            getRed(globalImage, x - 1, y + 1) * matriz[2][0] + getRed(globalImage, x, y + 1) * matriz[2][1] + getRed(globalImage, x + 1, y + 1) * matriz[2][2];
+
+        g = getGreen(globalImage, x - 1, y - 1) * matriz[0][0] + getGreen(globalImage, x, y - 1) * matriz[0][1] + getGreen(globalImage, x + 1, y - 1) * matriz[0][2] +
+            getGreen(globalImage, x - 1, y) * matriz[1][0] + getGreen(globalImage, x, y) * matriz[1][1] + getGreen(globalImage, x + 1, y) * matriz[1][2] +
+            getGreen(globalImage, x - 1, y + 1) * matriz[2][0] + getGreen(globalImage, x, y + 1) * matriz[2][1] + getGreen(globalImage, x + 1, y + 1) * matriz[2][2];
+
+        b = getBlue(globalImage, x - 1, y - 1) * matriz[0][0] + getBlue(globalImage, x, y - 1) * matriz[0][1] + getBlue(globalImage, x + 1, y - 1) * matriz[0][2] +
+            getBlue(globalImage, x - 1, y) * matriz[1][0] + getBlue(globalImage, x, y) * matriz[1][1] + getBlue(globalImage, x + 1, y + 1) * matriz[1][2] +
+            getBlue(globalImage, x - 1, y + 1) * matriz[2][0] + getBlue(globalImage, x, y + 1) * matriz[2][1] + getBlue(globalImage, x + 1, y + 1) * matriz[2][2];
+
+        setPixel(imageData, x, y, r, g, b, a);
+    }
+
     function copyImageData(ctx, src) {
         let dst = ctx.createImageData(src.width, src.height);
         dst.data.set(src.data);
@@ -407,8 +469,8 @@ $(document).ready(function() {
         if (downFlag) {
             context.lineWidth = 10;
             context.lineCap = "round";
-            context.lineTo(pos.x, pos.y);
             context.strokeStyle = color.value;
+            context.lineTo(pos.x, pos.y);
             context.stroke();
             context.beginPath();
             context.moveTo(pos.x, pos.y);
