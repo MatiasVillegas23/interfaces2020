@@ -399,17 +399,19 @@ $(document).ready(function() {
 
     canvas.onmouseup = function() {
         downFlag = false;
+        context.beginPath();
     }
 
-    canvas.onmousemove = function(event) { //verifica si se hizo click en un punto o crea uno nuevo
+    canvas.onmousemove = function(event) {
         let pos = getMousePos(canvas, event)
         if (downFlag) {
-            //console.log("Posicion x: " + Math.floor(pos.x));
-            //console.log("Posicion y: " + Math.floor(pos.y));
-            context.fillStyle = color.value;
+            context.lineWidth = 10;
+            context.lineCap = "round";
+            context.lineTo(pos.x, pos.y);
+            context.strokeStyle = color.value;
+            context.stroke();
             context.beginPath();
-            context.arc(pos.x, pos.y, 10, 0, 2 * Math.PI);
-            context.fill();
+            context.moveTo(pos.x, pos.y);
         }
     }
 
