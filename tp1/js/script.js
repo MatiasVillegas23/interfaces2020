@@ -27,8 +27,8 @@ $(document).ready(function() {
     document.querySelector("#sepia").onclick = filtroSepia;
     let brightness = document.querySelector("#brillo");
     brightness.addEventListener("change", filtroBrillo, false);
-    let saturation = document.querySelector("#saturacion");
-    saturation.addEventListener("change", filtroSaturacion, false);
+    //let saturation = document.querySelector("#saturacion");
+    //saturation.addEventListener("change", filtroSaturacion, false);
 
     document.querySelector('#blur').addEventListener('click', function() {
         let matriz = [
