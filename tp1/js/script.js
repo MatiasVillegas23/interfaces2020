@@ -75,6 +75,8 @@ $(document).ready(function() {
 
             image.onload = function() {
 
+                canvas.width = 1200;
+                canvas.height = 600;
                 let imageAspectRatio = (1.0 * this.height) / this.width;
                 let imageScaledWidth = canvas.width;
                 let imageScaledHeight = canvas.width * imageAspectRatio;
@@ -433,6 +435,8 @@ $(document).ready(function() {
     }
 
     function cleanCanvas() { //resetea el canvas al color por defecto
+        canvas.width = 1200;
+        canvas.height = 600;
         context.fillStyle = '#024359';
         context.fillRect(0, 0, canvas.width, canvas.height);
         filtroActual = "";
