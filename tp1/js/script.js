@@ -119,6 +119,8 @@ $(document).ready(function() {
                     setPixel(globalImage, x, y, r, g, b, a);
                 }
             }
+            canvas.width = globalImage.width;
+            canvas.height = globalImage.height;
             context.putImageData(globalImage, 0, 0);
         }
     }
