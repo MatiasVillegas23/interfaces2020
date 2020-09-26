@@ -4,6 +4,7 @@ class Ficha {
         this.posY = posY;
         this.radio = radio;
         this.color = color;
+        this.enTablero = false;
     }
 
     getX() {
@@ -26,13 +27,13 @@ class Ficha {
         return this.radio;
     }
 
-    /*setColor(delta) { //setea el nuevo color, dependiendo del movimiento de la rueda del mouse
-        if (delta > 0) {
-            this.color = '#ff6767';
-        } else {
-            this.color = '#b00000';
-        }
-    }*/
+    getEnTablero() {
+        return this.enTablero;
+    }
+
+    setEnTablero(b) {
+        this.enTablero = b;
+    }
 
     clickInside(x, y) { //devuelve si se hizo click dentro de la ficha
         let dx = Math.abs(x - this.getX());

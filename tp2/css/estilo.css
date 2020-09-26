@@ -1,3 +1,11 @@
 canvas {
     outline: black 3px solid;
 }
+
+.detalles {
+    text-align: left;
+    margin-right: 25%;
+    margin-left: 5%;
+    margin-top: 1%;
+    border-radius: 5px;
+}
