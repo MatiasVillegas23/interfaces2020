@@ -7,6 +7,7 @@ $(document).ready(function() {
     let arrFichas = [];
     let fichasTotales = 42;
     let tablero = new Tablero(320, 120);
+    let turno = 1;
 
     iniciar(fichasTotales);
 
@@ -60,10 +61,11 @@ $(document).ready(function() {
 
     canvas.onmouseup = function(event) {
         let pos = getMousePos(canvas, event);
-        if (tablero.enDropZone(pos.x, pos.y)) {
-            tablero.agregarfichaBis(fichaActual, pos.x, arrFichas);
+        if (tablero.enDropZone(pos.x, pos.y) && (fichaActual != null)) {
+            turno = tablero.agregarficha(fichaActual, pos.x, arrFichas, turno);
             actualizar();
         }
+        //actualizar();
         fichaActual = null;
     }
 
@@ -71,7 +73,7 @@ $(document).ready(function() {
         let pos = getMousePos(canvas, event);
 
         for (let i = 0; i < arrFichas.length; i++) {
-            if (arrFichas[i].clickInside(pos.x, pos.y) && (!arrFichas[i].getEnTablero())) {
+            if (arrFichas[i].clickInside(pos.x, pos.y) && (!arrFichas[i].getEnTablero()) && (arrFichas[i].getJugador() == turno)) {
                 fichaActual = arrFichas[i];
                 break;
             }
@@ -92,6 +94,7 @@ $(document).ready(function() {
         cleanCanvas();
         arrFichas.splice(0, arrFichas.length);
         tablero = new Tablero(320, 120);
+        turno = 1;
         iniciar(fichasTotales);
     });
 });

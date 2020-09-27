@@ -21,14 +21,20 @@ class Tablero {
         return this.matTablero;
     }
 
-    agregarfichaBis(ficha, x, arrFichas) {
+    agregarficha(ficha, x, arrFichas, turno) {
         for (let i = 0; i < 7; i++) {
             if (x < (this.posX + (80 * (i + 1)))) {
                 for (let j = this.matTablero[i].length - 1; j >= 0; j--) {
                     if (this.matTablero[i][j] == null) {
                         this.matTablero[i][j] = ficha;
                         ficha.setEnTablero(true);
-                        break;
+                        if (turno == 1) {
+                            this.eliminarFicha(arrFichas);
+                            return 2;
+                        } else {
+                            this.eliminarFicha(arrFichas);
+                            return 1;
+                        }
                     }
                 }
                 break;
@@ -36,67 +42,6 @@ class Tablero {
         }
         this.eliminarFicha(arrFichas);
     }
-
-    /*agregarFicha(ficha, x, arrFichas) { //agrega la ficha al tablero
-        if (x < (this.posX + 80)) {
-            for (let index = this.matTablero[0].length - 1; index >= 0; index--) {
-                if (this.matTablero[0][index] == null) {
-                    this.matTablero[0][index] = ficha;
-                    ficha.setEnTablero(true);
-                    break;
-                }
-            }
-        } else if (x < (this.posX + 80 * 2)) {
-            for (let index = this.matTablero[1].length - 1; index >= 0; index--) {
-                if (this.matTablero[1][index] == null) {
-                    this.matTablero[1][index] = ficha;
-                    ficha.setEnTablero(true);
-                    break;
-                }
-            }
-        } else if (x < (this.posX + 80 * 3)) {
-            for (let index = this.matTablero[2].length - 1; index >= 0; index--) {
-                if (this.matTablero[2][index] == null) {
-                    this.matTablero[2][index] = ficha;
-                    ficha.setEnTablero(true);
-                    break;
-                }
-            }
-        } else if (x < (this.posX + 80 * 4)) {
-            for (let index = this.matTablero[3].length - 1; index >= 0; index--) {
-                if (this.matTablero[3][index] == null) {
-                    this.matTablero[3][index] = ficha;
-                    ficha.setEnTablero(true);
-                    break;
-                }
-            }
-        } else if (x < (this.posX + 80 * 5)) {
-            for (let index = this.matTablero[4].length - 1; index >= 0; index--) {
-                if (this.matTablero[4][index] == null) {
-                    this.matTablero[4][index] = ficha;
-                    ficha.setEnTablero(true);
-                    break;
-                }
-            }
-        } else if (x < (this.posX + 80 * 6)) {
-            for (let index = this.matTablero[5].length - 1; index >= 0; index--) {
-                if (this.matTablero[5][index] == null) {
-                    this.matTablero[5][index] = ficha;
-                    ficha.setEnTablero(true);
-                    break;
-                }
-            }
-        } else if (x < (this.posX + 80 * 7)) {
-            for (let index = this.matTablero[6].length - 1; index >= 0; index--) {
-                if (this.matTablero[6][index] == null) {
-                    this.matTablero[6][index] = ficha;
-                    ficha.setEnTablero(true);
-                    break;
-                }
-            }
-        }
-        this.eliminarFicha(arrFichas);
-    }*/
 
     eliminarFicha(arrFichas) {
         for (let i = 0; i < arrFichas.length; i++) {
@@ -123,12 +68,9 @@ class Tablero {
             for (let j = 0; j < 6; j++) {
                 y = this.posY + (size * j);
                 if (this.matTablero[i][j] != null) {
-                    ctx.fillStyle = this.matTablero[i][j].getColor();
-                    ctx.beginPath();
-                    //console.log("la casilla llena en x: " + (x + 40) + " y: " + (y + 40));
-                    ctx.arc((x + 40), (y + 40), 30, 0, 2 * Math.PI);
-                    ctx.fill();
+                    this.matTablero[i][j].drawFichaEn(ctx, (x + 40), (y + 40), this.matTablero[i][j].getColor());
                 }
+                ctx.strokeStyle = "#000000";
                 ctx.strokeRect(x, y, size, size);
             }
         }

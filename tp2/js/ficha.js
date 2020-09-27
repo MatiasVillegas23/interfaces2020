@@ -5,6 +5,7 @@ class Ficha {
         this.radio = radio;
         this.color = color;
         this.enTablero = false;
+        this.ganadora = false;
         this.jugador = jugador;
     }
 
@@ -48,6 +49,14 @@ class Ficha {
         return this.color;
     }
 
+    getGanadora() {
+        return this.ganadora;
+    }
+
+    setGanadora(b) {
+        this.ganadora = b;
+    }
+
     clickInside(x, y) { //devuelve si se hizo click dentro de la ficha
         let dx = Math.abs(x - this.getX());
         let dy = Math.abs(y - this.getY());
@@ -64,5 +73,22 @@ class Ficha {
         ctx.beginPath();
         ctx.arc(this.getX(), this.getY(), this.getRadio(), 0, 2 * Math.PI);
         ctx.fill();
+    }
+
+    drawFichaEn(ctx, x, y, color) { //dibuja la ficha en la pos indicada
+        if (this.getGanadora()) {
+            ctx.strokeStyle = "#39D211";
+            ctx.fillStyle = color;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(x, y, this.getRadio(), 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.stroke();
+        } else {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(x, y, this.getRadio(), 0, 2 * Math.PI);
+            ctx.fill();
+        }
     }
 }
