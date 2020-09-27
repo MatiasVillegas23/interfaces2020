@@ -13,18 +13,20 @@ $(document).ready(function() {
     function iniciar(fichasTotales) {
         cleanCanvas();
 
-        let posX, posY, color;
+        let posX, posY, color, jugador;
         for (let index = 0; index < fichasTotales; index++) {
             if (index % 2 == 0) {
                 posX = 90;
                 posY = 530;
                 color = '#CF0C27';
+                jugador = 1;
             } else {
                 posX = 1110;
                 posY = 530;
                 color = '#11093E';
+                jugador = 2;
             }
-            let ficha = new Ficha(posX, posY, 30, color);
+            let ficha = new Ficha(posX, posY, 30, color, jugador);
             arrFichas.push(ficha);
         }
         drawAll();
@@ -42,6 +44,15 @@ $(document).ready(function() {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
+    function actualizar() { //funcion q refresca el canvas en cada evento
+        cleanCanvas();
+        tablero.drawTablero(ctx, 80);
+        for (let index = 0; index < arrFichas.length; index++) {
+            arrFichas[index].drawFicha(ctx);
+        }
+        ctx.closePath();
+    }
+
     function getMousePos(canvas, event) { //devuelve la posicion del click en el canvas
         let rect = canvas.getBoundingClientRect();
         return { x: event.clientX - rect.left, y: event.clientY - rect.top };
@@ -49,7 +60,10 @@ $(document).ready(function() {
 
     canvas.onmouseup = function(event) {
         let pos = getMousePos(canvas, event);
-        tablero.enDropZone(pos.x, pos.y);
+        if (tablero.enDropZone(pos.x, pos.y)) {
+            tablero.agregarfichaBis(fichaActual, pos.x, arrFichas);
+            actualizar();
+        }
         fichaActual = null;
     }
 
@@ -58,8 +72,6 @@ $(document).ready(function() {
 
         for (let i = 0; i < arrFichas.length; i++) {
             if (arrFichas[i].clickInside(pos.x, pos.y) && (!arrFichas[i].getEnTablero())) {
-                //console.log("Posicion x: " + Math.floor(pos.x));
-                //console.log("Posicion y: " + Math.floor(pos.y));
                 fichaActual = arrFichas[i];
                 break;
             }
@@ -70,27 +82,16 @@ $(document).ready(function() {
         let pos = getMousePos(canvas, event);
 
         if (fichaActual != null) {
-            //console.log("Posicion x: " + Math.floor(pos.x));
-            //console.log("Posicion y: " + Math.floor(pos.y));
             fichaActual.setX(pos.x);
             fichaActual.setY(pos.y);
             actualizar();
         }
     }
 
-    function actualizar() { //funcion q refresca el canvas en cada evento
-        cleanCanvas();
-        tablero.drawTablero(ctx, 80);
-        for (let index = 0; index < arrFichas.length; index++) {
-            arrFichas[index].drawFicha(ctx);
-        }
-        ctx.closePath();
-    }
-
     document.querySelector('#reinicio').addEventListener('click', function() {
         cleanCanvas();
         arrFichas.splice(0, arrFichas.length);
+        tablero = new Tablero(320, 120);
         iniciar(fichasTotales);
-        //console.log("entre");
     });
 });

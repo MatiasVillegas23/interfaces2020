@@ -1,10 +1,11 @@
 class Ficha {
-    constructor(posX, posY, radio, color) {
+    constructor(posX, posY, radio, color, jugador) {
         this.posX = posX;
         this.posY = posY;
         this.radio = radio;
         this.color = color;
         this.enTablero = false;
+        this.jugador = jugador;
     }
 
     getX() {
@@ -23,6 +24,14 @@ class Ficha {
         this.posY = y;
     }
 
+    getJugador() {
+        return this.jugador;
+    }
+
+    setJugador(j) {
+        this.jugador = j;
+    }
+
     getRadio() {
         return this.radio;
     }
@@ -33,6 +42,10 @@ class Ficha {
 
     setEnTablero(b) {
         this.enTablero = b;
+    }
+
+    getColor() {
+        return this.color;
     }
 
     clickInside(x, y) { //devuelve si se hizo click dentro de la ficha
