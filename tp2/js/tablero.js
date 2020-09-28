@@ -68,7 +68,7 @@ class Tablero {
             for (let j = 0; j < 6; j++) {
                 y = this.posY + (size * j);
                 if (this.matTablero[i][j] != null) {
-                    this.matTablero[i][j].drawFichaEn(ctx, (x + 40), (y + 40), this.matTablero[i][j].getColor());
+                    this.matTablero[i][j].drawFichaEn(ctx, (x + 40), (y + 40) /*, this.matTablero[i][j].getColor()*/ );
                 }
                 ctx.strokeStyle = "#000000";
                 ctx.strokeRect(x, y, size, size);

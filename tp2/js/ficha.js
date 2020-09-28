@@ -1,12 +1,14 @@
 class Ficha {
-    constructor(posX, posY, radio, color, jugador) {
+    constructor(posX, posY, radio, /*color,*/ jugador, img, imgW) {
         this.posX = posX;
         this.posY = posY;
         this.radio = radio;
-        this.color = color;
+        //this.color = color;
         this.enTablero = false;
         this.ganadora = false;
         this.jugador = jugador;
+        this.img = img;
+        this.imgW = imgW;
     }
 
     getX() {
@@ -45,9 +47,9 @@ class Ficha {
         this.enTablero = b;
     }
 
-    getColor() {
+    /*getColor() {
         return this.color;
-    }
+    }*/
 
     getGanadora() {
         return this.ganadora;
@@ -68,7 +70,7 @@ class Ficha {
         }
     }
 
-    drawFicha(ctx) { //dibuja la ficha
+    /*drawFicha(ctx) { //dibuja la ficha
         ctx.fillStyle = this.color;
         ctx.beginPath();
         ctx.arc(this.getX(), this.getY(), this.getRadio(), 0, 2 * Math.PI);
@@ -89,6 +91,19 @@ class Ficha {
             ctx.beginPath();
             ctx.arc(x, y, this.getRadio(), 0, 2 * Math.PI);
             ctx.fill();
+        }
+    }*/
+
+    drawFicha(ctx) { //dibuja la ficha
+        //console.log(this.img);
+        ctx.drawImage(this.img, this.posX - this.radio, this.posY - this.radio);
+    }
+
+    drawFichaEn(ctx, x, y) { //dibuja la ficha en la pos indicada
+        if (this.getGanadora()) {
+            ctx.drawImage(this.imgW, x - this.radio, y - this.radio);
+        } else {
+            ctx.drawImage(this.img, x - this.radio, y - this.radio);
         }
     }
 }
