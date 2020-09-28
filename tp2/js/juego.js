@@ -8,6 +8,7 @@ $(document).ready(function() {
     let fichasTotales = 42;
     let tablero = new Tablero(320, 120);
     let turno = 1;
+    let ganador = false;
 
     iniciar(fichasTotales);
 
@@ -61,11 +62,13 @@ $(document).ready(function() {
 
     canvas.onmouseup = function(event) {
         let pos = getMousePos(canvas, event);
-        if (tablero.enDropZone(pos.x, pos.y) && (fichaActual != null)) {
+        if (tablero.enDropZone(pos.x, pos.y) && (fichaActual != null) && (!ganador)) {
             turno = tablero.agregarficha(fichaActual, pos.x, arrFichas, turno);
+            if (hayGanador()) {
+                ganador = true;
+            }
             actualizar();
         }
-        //actualizar();
         fichaActual = null;
     }
 
@@ -73,7 +76,7 @@ $(document).ready(function() {
         let pos = getMousePos(canvas, event);
 
         for (let i = 0; i < arrFichas.length; i++) {
-            if (arrFichas[i].clickInside(pos.x, pos.y) && (!arrFichas[i].getEnTablero()) && (arrFichas[i].getJugador() == turno)) {
+            if (arrFichas[i].clickInside(pos.x, pos.y) && (!arrFichas[i].getEnTablero()) && (arrFichas[i].getJugador() == turno) && (!ganador)) {
                 fichaActual = arrFichas[i];
                 break;
             }
@@ -95,6 +98,115 @@ $(document).ready(function() {
         arrFichas.splice(0, arrFichas.length);
         tablero = new Tablero(320, 120);
         turno = 1;
+        ganador = false;
         iniciar(fichasTotales);
     });
+
+    function hayGanador() {
+        let matriz = tablero.getMatTablero();
+        let largo = matriz.length;
+        let alto = matriz[0].length;
+        let jugador;
+        let ganador = false;
+
+        for (let i = 0; i < largo; i++) {
+            for (let j = 0; j < alto; j++) {
+                if (matriz[i][j] != null) {
+                    jugador = matriz[i][j].getJugador();
+                    ganador = evaluar(jugador, matriz, i, j, largo, alto);
+                    if (ganador.length != 0) {
+                        matriz[i][j].setGanadora(true);
+                        for (let index = 0; index < ganador.length; index++) {
+                            ganador[index].setGanadora(true);
+                        }
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    function evaluar(jugador, matriz, i, j, largo, alto) {
+        console.log("evaluar");
+        console.log("i: " + i + " j: " + j);
+        let pos = 1;
+        let win = false;
+        let arr = [];
+
+        if (!win) {
+            for (let index = 0; index < 4; index++) { //abajo ANDA
+                let x = i;
+                let y = j - (index + 1);
+                if (x < largo && x > -1 && y < alto && y > -1 && matriz[x][y] != null && matriz[x][y].getJugador() == jugador) {
+                    pos++;
+                    arr.push(matriz[x][y]);
+                } else {
+                    if (pos < 4) {
+                        arr = [];
+                        pos = 1;
+                        break;
+                    }
+                }
+            }
+            if (pos == 4) {
+                return arr;
+            }
+            for (let index = 0; index < 4; index++) { //izq ANDA
+                let x = i - (index + 1);
+                let y = j;
+                if (x < largo && x > -1 && y < alto && y > -1 && matriz[x][y] != null && matriz[x][y].getJugador() == jugador) {
+                    pos++;
+                    arr.push(matriz[x][y]);
+                } else {
+                    if (pos < 4) {
+                        arr = [];
+                        pos = 1;
+                        break;
+                    }
+                }
+            }
+            if (pos == 4) {
+                console.log("retorne por izq");
+                return arr;
+            }
+            for (let index = 0; index < 4; index++) { //abajo izq 
+                let x = i - (index + 1);
+                let y = j - (index + 1);
+                if (x < largo && x > -1 && y < alto && y > -1 && matriz[x][y] != null && matriz[x][y].getJugador() == jugador) {
+                    pos++;
+                    arr.push(matriz[x][y]);
+                } else {
+                    if (pos < 4) {
+                        arr = [];
+                        pos = 1;
+                        break;
+                    }
+                }
+            }
+            if (pos == 4) {
+                console.log("retorne por abi");
+                return arr;
+            }
+            for (let index = 0; index < 4; index++) { //derecha abajo
+                let x = i + (index + 1);
+                let y = j - (index + 1);
+                if (x < largo && x > -1 && y < alto && y > -1 && matriz[x][y] != null && matriz[x][y].getJugador() == jugador) {
+                    pos++;
+                    arr.push(matriz[x][y]);
+                } else {
+                    if (pos < 4) {
+                        arr = [];
+                        pos = 1;
+                        break;
+                    }
+                }
+            }
+            if (pos == 4) {
+                console.log("retorne por abd");
+                return arr;
+            }
+        }
+        return [];
+    }
 });
