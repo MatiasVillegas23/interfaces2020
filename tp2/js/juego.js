@@ -11,7 +11,7 @@ $(document).ready(function() {
     let turno = 1;
     let ganador = false;
 
-    setTimeout(iniciar, 500);
+    setTimeout(iniciar, 650);
     cargarImgs();
 
     function iniciar() {
