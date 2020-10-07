@@ -3,6 +3,8 @@ $(document).ready(function() {
 
     let canvas = document.querySelector('#canvas');
     let ctx = canvas.getContext('2d');
+    let boton = document.querySelector('#reinicio');
+    let indicador = document.querySelector('.indicador');
     let fichaActual = null;
     let arrFichas = [];
     let arrImgs = [];
@@ -10,31 +12,38 @@ $(document).ready(function() {
     let tablero = new Tablero(320, 120);
     let turno = 1;
     let ganador = false;
+    let xI = 0;
+    let yI = 0;
 
-    setTimeout(iniciar, 650);
+    setTimeout(iniciar, 1000);
     cargarImgs();
 
     function iniciar() {
         cleanCanvas();
+        boton.innerHTML = 'Reiniciar';
+        boton.disabled = false;
+        indicador.innerHTML = "Turno Jugador Rojo";
 
-        let posX, posY, /*color,*/ jugador, img, imgW;
+        let posX, posY, color, jugador, img, imgW, imgS;
         for (let index = 0; index < fichasTotales; index++) {
             if (index % 2 == 0) {
                 posX = 90;
-                posY = 530;
-                //color = '#CF0C27';
+                posY = 560 - (13 * index + 1);
+                color = "Rojo";
                 img = arrImgs[0];
                 imgW = arrImgs[2];
+                imgS = arrImgs[4];
                 jugador = 1;
             } else {
-                posX = 1110;
-                posY = 530;
-                //color = '#11093E';
+                posX = 1100;
+                posY = 575 - (13 * index + 1);
+                color = "Azul";
                 img = arrImgs[1];
                 imgW = arrImgs[3];
+                imgS = arrImgs[5];
                 jugador = 2;
             }
-            let ficha = new Ficha(posX, posY, 30, /*color,*/ jugador, img, imgW);
+            let ficha = new Ficha(posX, posY, 30, jugador, img, imgW, imgS, color);
             //console.log(ficha);
             arrFichas.push(ficha);
         }
@@ -62,6 +71,10 @@ $(document).ready(function() {
         ctx.closePath();
     }
 
+    function numeroRandom(min, max) {
+        return Math.round(Math.random() * (max - min) + min);
+    }
+
     function getMousePos(canvas, event) { //devuelve la posicion del click en el canvas
         let rect = canvas.getBoundingClientRect();
         return { x: event.clientX - rect.left, y: event.clientY - rect.top };
@@ -69,11 +82,26 @@ $(document).ready(function() {
 
     canvas.onmouseup = function(event) {
         let pos = getMousePos(canvas, event);
+        if (fichaActual != null) {
+            fichaActual.setSeleccionada(false);
+            actualizar();
+        }
+
         if (tablero.enDropZone(pos.x, pos.y) && (fichaActual != null) && (!ganador)) {
             turno = tablero.agregarficha(fichaActual, pos.x, arrFichas, turno);
+            if (fichaActual.getColor() == "Rojo") {
+                indicador.innerHTML = "Turno Jugador Azul";
+            } else {
+                indicador.innerHTML = "Turno Jugador Rojo";
+            }
             if (hayGanador()) {
+                indicador.innerHTML = "Gano Jugador " + fichaActual.getColor() + "!";
                 ganador = true;
             }
+            actualizar();
+        } else if (fichaActual != null) {
+            fichaActual.setX(xI);
+            fichaActual.setY(yI);
             actualizar();
         }
         fichaActual = null;
@@ -85,6 +113,10 @@ $(document).ready(function() {
         for (let i = 0; i < arrFichas.length; i++) {
             if (arrFichas[i].clickInside(pos.x, pos.y) && (!arrFichas[i].getEnTablero()) && (arrFichas[i].getJugador() == turno) && (!ganador)) {
                 fichaActual = arrFichas[i];
+                xI = fichaActual.getX();
+                yI = fichaActual.getY();
+                fichaActual.setSeleccionada(true);
+                actualizar();
                 break;
             }
         }
@@ -94,6 +126,7 @@ $(document).ready(function() {
         let pos = getMousePos(canvas, event);
 
         if (fichaActual != null) {
+            fichaActual.drawFicha(ctx);
             fichaActual.setX(pos.x);
             fichaActual.setY(pos.y);
             actualizar();
@@ -102,8 +135,12 @@ $(document).ready(function() {
 
     document.querySelector('#reinicio').addEventListener('click', function() {
         cleanCanvas();
+        xI = 0;
+        yI = 0;
+        indicador.innerHTML = "Turno Jugador Rojo";
         arrFichas.splice(0, arrFichas.length);
         tablero = new Tablero(320, 120);
+        tablero.setImg(arrImgs[6]);
         turno = 1;
         ganador = false;
         iniciar(fichasTotales);
@@ -229,7 +266,23 @@ $(document).ready(function() {
                     fichaAzulW.src = "img/azulW.png";
                     fichaAzulW.onload = function() {
                         arrImgs.push(fichaAzulW);
-                        //console.table("dentro de cargar " + arrImgs);
+                        let fichaRojaS = new Image();
+                        fichaRojaS.src = "img/rojaS.png";
+                        fichaRojaS.onload = function() {
+                            arrImgs.push(fichaRojaS);
+                            let fichaAzulS = new Image();
+                            fichaAzulS.src = "img/azulS.png";
+                            fichaAzulS.onload = function() {
+                                arrImgs.push(fichaAzulS);
+                                let tableroImg = new Image();
+                                tableroImg.src = "img/tablero.png";
+                                tableroImg.onload = function() {
+                                    arrImgs.push(tableroImg);
+                                    tablero.setImg(arrImgs[6]);
+                                    //console.table("dentro de cargar " + arrImgs);
+                                }
+                            }
+                        }
                     }
                 }
             }

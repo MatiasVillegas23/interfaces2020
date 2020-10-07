@@ -1,14 +1,16 @@
 class Ficha {
-    constructor(posX, posY, radio, /*color,*/ jugador, img, imgW) {
+    constructor(posX, posY, radio, jugador, img, imgW, imgS, color) {
         this.posX = posX;
         this.posY = posY;
         this.radio = radio;
-        //this.color = color;
+        this.color = color;
         this.enTablero = false;
         this.ganadora = false;
         this.jugador = jugador;
         this.img = img;
         this.imgW = imgW;
+        this.imgS = imgS;
+        this.seleccionada = false;
     }
 
     getX() {
@@ -47,9 +49,9 @@ class Ficha {
         this.enTablero = b;
     }
 
-    /*getColor() {
+    getColor() {
         return this.color;
-    }*/
+    }
 
     getGanadora() {
         return this.ganadora;
@@ -57,6 +59,14 @@ class Ficha {
 
     setGanadora(b) {
         this.ganadora = b;
+    }
+
+    getSeleccionada() {
+        return this.seleccionada;
+    }
+
+    setSeleccionada(seleccionada) {
+        this.seleccionada = seleccionada;
     }
 
     clickInside(x, y) { //devuelve si se hizo click dentro de la ficha
@@ -96,7 +106,11 @@ class Ficha {
 
     drawFicha(ctx) { //dibuja la ficha
         //console.log(this.img);
-        ctx.drawImage(this.img, this.posX - this.radio, this.posY - this.radio);
+        if (this.getSeleccionada()) {
+            ctx.drawImage(this.imgS, this.posX - this.radio, this.posY - this.radio);
+        } else {
+            ctx.drawImage(this.img, this.posX - this.radio, this.posY - this.radio);
+        }
     }
 
     drawFichaEn(ctx, x, y) { //dibuja la ficha en la pos indicada

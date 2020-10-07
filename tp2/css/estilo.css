@@ -1,5 +1,5 @@
 canvas {
-    outline: black 3px solid;
+    outline: #696969 3px solid;
 }
 
 .detalles {
@@ -8,4 +8,8 @@ canvas {
     margin-left: 5%;
     margin-top: 1%;
     border-radius: 5px;
+}
+
+.utiles {
+    display: inline-block;
 }

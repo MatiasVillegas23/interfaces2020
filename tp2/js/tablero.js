@@ -3,7 +3,16 @@ class Tablero {
         this.posX = posX;
         this.posY = posY;
         this.matTablero;
+        this.img;
         this.cargarTablero();
+    }
+
+    getImg() {
+        return this.img;
+    }
+
+    setImg(img) {
+        this.img = img;
     }
 
     cargarTablero() {
@@ -60,7 +69,23 @@ class Tablero {
         }
     }
 
-    drawTablero(ctx, size) { //dibuja el tablero
+    drawTablero(ctx, size) {
+        let x, y;
+        ctx.drawImage(this.img, this.posX, this.posY);
+        for (let i = 0; i < 7; i++) {
+            x = this.posX + (size * i);
+            for (let j = 0; j < 6; j++) {
+                y = this.posY + (size * j);
+                if (this.matTablero[i][j] != null) {
+                    this.matTablero[i][j].drawFichaEn(ctx, (x + 40), (y + 40));
+                }
+                //ctx.strokeStyle = "#000000";
+                //ctx.strokeRect(x, y, size, size);
+            }
+        }
+    }
+
+    /*drawTablero(ctx, size) { //dibuja el tablero
         //ctx.strokeRect(this.posX, this.posY - size, size * 7, size);
         let x, y;
         for (let i = 0; i < 7; i++) {
@@ -68,11 +93,11 @@ class Tablero {
             for (let j = 0; j < 6; j++) {
                 y = this.posY + (size * j);
                 if (this.matTablero[i][j] != null) {
-                    this.matTablero[i][j].drawFichaEn(ctx, (x + 40), (y + 40) /*, this.matTablero[i][j].getColor()*/ );
+                    this.matTablero[i][j].drawFichaEn(ctx, (x + 40), (y + 40) /*, this.matTablero[i][j].getColor() AGERGAR ACA UN CIERRE DE COMEN);
                 }
                 ctx.strokeStyle = "#000000";
                 ctx.strokeRect(x, y, size, size);
             }
         }
-    }
+    }*/
 }
