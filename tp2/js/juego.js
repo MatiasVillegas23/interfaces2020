@@ -15,7 +15,7 @@ $(document).ready(function() {
     let xI = 0;
     let yI = 0;
 
-    setTimeout(iniciar, 1000);
+    setTimeout(iniciar, 2000);
     cargarImgs();
 
     function iniciar() {
