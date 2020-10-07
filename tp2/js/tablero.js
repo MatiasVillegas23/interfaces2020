@@ -69,8 +69,9 @@ class Tablero {
         }
     }
 
-    drawTablero(ctx, size) {
+    drawTablero(ctx, size, drop) {
         let x, y;
+        ctx.drawImage(drop, this.posX, this.posY - 80);
         ctx.drawImage(this.img, this.posX, this.posY);
         for (let i = 0; i < 7; i++) {
             x = this.posX + (size * i);

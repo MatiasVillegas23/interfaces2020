@@ -51,7 +51,7 @@ $(document).ready(function() {
     }
 
     function drawAll() {
-        tablero.drawTablero(ctx, 80);
+        tablero.drawTablero(ctx, 80, arrImgs[7]);
         for (let index = 0; index < fichasTotales; index++) {
             arrFichas[index].drawFicha(ctx);
         }
@@ -64,7 +64,7 @@ $(document).ready(function() {
 
     function actualizar() { //funcion q refresca el canvas en cada evento
         cleanCanvas();
-        tablero.drawTablero(ctx, 80);
+        tablero.drawTablero(ctx, 80, arrImgs[7]);
         for (let index = 0; index < arrFichas.length; index++) {
             arrFichas[index].drawFicha(ctx);
         }
@@ -279,7 +279,12 @@ $(document).ready(function() {
                                 tableroImg.onload = function() {
                                     arrImgs.push(tableroImg);
                                     tablero.setImg(arrImgs[6]);
-                                    //console.table("dentro de cargar " + arrImgs);
+                                    let drop = new Image();
+                                    drop.src = "img/drop.png";
+                                    drop.onload = function() {
+                                        arrImgs.push(drop);
+                                        //console.table("dentro de cargar " + arrImgs);
+                                    }
                                 }
                             }
                         }
