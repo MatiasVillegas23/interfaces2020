@@ -14,7 +14,7 @@ $(document).ready(function() {
     menu.addEventListener('click', toggleMenu, false);
 
     // Set the date we're counting down to
-    let countDownDate = new Date("Jan 1, 2021 21:00:00").getTime();
+    let countDownDate = new Date("Jan 8, 2021 21:00:00").getTime();
 
     // Update the count down every 1 second
     let x = setInterval(function() {

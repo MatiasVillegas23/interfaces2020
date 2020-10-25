@@ -143,9 +143,23 @@ footer p {
     box-sizing: border-box;
 }
 
+.personajes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.div .subtitulo {
+    font-family: 'Dead Stock';
+    color: #FFF100;
+    font-size: 35px;
+    text-align: center;
+}
+
 .wrap {
     width: 1100px;
-    margin: 50px auto;
+    /*margin: 50px auto;*/
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
@@ -284,10 +298,23 @@ footer p {
 }
 
 .div .countdown {
-    font-family: 'open sans';
-    color: white;
-    font-size: 15px;
+    font-family: 'Dead Stock';
+    color: #FFF100;
+    font-size: 35px;
     text-align: center;
+}
+
+.countdownContenedor {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.div .countdownFijo {
+    font-family: 'Dead Stock';
+    color: #FFF100;
+    font-size: 35px;
 }
 
 .contenedor {
@@ -311,6 +338,12 @@ footer p {
     100% {
         transform: rotate(360deg);
     }
+}
+
+.cargando {
+    font-family: 'Dead Stock';
+    color: #FFF100;
+    font-size: 35px;
 }
 
 .carrusel {
