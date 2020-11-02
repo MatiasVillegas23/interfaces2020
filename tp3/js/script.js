@@ -2,6 +2,7 @@ $(document).ready(function() {
     "use strict";
 
     let menu = document.querySelector('.hamburger');
+    let opciones = document.querySelectorAll('#opciones');
 
     // method
     function toggleMenu(event) {
@@ -12,6 +13,14 @@ $(document).ready(function() {
 
     // event
     menu.addEventListener('click', toggleMenu, false);
+
+    for (let i = 0; i < opciones.length; i++) {
+        opciones[i].addEventListener("click", function() {
+            menu.classList.toggle('is-active');
+            document.querySelector(".menuppal").classList.toggle("is_active");
+            //event.preventDefault();
+        });
+    }
 
     // Set the date we're counting down to
     let countDownDate = new Date("Jan 8, 2021 21:00:00").getTime();
@@ -45,8 +54,38 @@ $(document).ready(function() {
     setTimeout(function() {
         let header = document.querySelector(".header");
         let contenedor = document.querySelector(".contenedor");
+        let footer = document.querySelector("footer");
+        let cuerpo = document.querySelector(".cuerpo");
         header.hidden = false;
         contenedor.hidden = true;
+        footer.hidden = false;
+        cuerpo.hidden = false;
     }, 3000);
 
+    let acordeon = document.querySelectorAll(".acordeon");
+
+    for (let i = 0; i < acordeon.length; i++) {
+        acordeon[i].addEventListener("click", function() {
+            this.classList.toggle("activa");
+            let panel = this.nextElementSibling;
+            if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+            }
+        });
+    }
+
+    let johnny = document.querySelector(".johnny");
+    let daniel = document.querySelector(".daniel");
+    window.addEventListener("scroll", function() {
+        //console.log(document.documentElement.scrollTop);
+        if (document.documentElement.scrollTop > 2000 && document.documentElement.scrollTop < 2150) {
+            //console.log("entre");
+            //console.log(window.pageYOffset);
+            //daniel.hidden = false;
+            johnny.style.left = window.pageYOffset - 2191 + "px";
+            daniel.style.left = -window.pageYOffset + 3500 + "px";
+        }
+    });
 });

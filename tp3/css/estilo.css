@@ -284,6 +284,17 @@ footer p {
     justify-content: center;
 }
 
+.fondo5 {
+    width: 100%;
+    height: 100vh;
+    background: url("../img/cobra1.jpg");
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
+    display: flex;
+    justify-content: center;
+}
+
 .div {
     background-color: #0B0B0B;
     margin-bottom: 0%;
@@ -363,4 +374,100 @@ footer p {
 .carousel-inner>.item>img {
     height: 600px;
     width: 900px;
+}
+
+.eventosContenedor {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.acordeon-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.acordeon {
+    background-color: #FFF100;
+    color: rgb(8, 8, 8);
+    cursor: pointer;
+    /*padding: 18px;*/
+    border: none;
+    text-align: left;
+    font-family: "open sans";
+    outline: none;
+    font-size: 20px;
+    transition: 0.4s;
+    overflow: hidden;
+    width: 70%;
+}
+
+.activa,
+.acordeon:hover {
+    background-color: #C6BB00;
+}
+
+.acordeon:after {
+    content: '\002B';
+    color: #0B0B0B;
+    font-weight: bold;
+    float: right;
+    /*margin-left: 5px;*/
+}
+
+.activa:after {
+    content: "\2212";
+}
+
+.panel {
+    padding: 0 18px;
+    background-color: #C6BB00;
+    width: 70%;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}
+
+.panel p {
+    text-align: left;
+    font-size: 18px;
+}
+
+.imagenAcordeon {
+    width: 250px;
+    height: 250px;
+    left: 5px;
+    top: 5px;
+    bottom: 10px;
+    background-size: 300px 300px;
+    background-position: center center;
+    z-index: 2;
+    transition: .5s;
+}
+
+.imagenAcordeon:hover {
+    transform: scale(1.1);
+    transition: .5s;
+}
+
+.johnny {
+    background: url('../img/scroll1.png');
+    top: 2648px;
+    width: 267px;
+    height: 495px;
+    position: absolute;
+    /*z-index: 3;*/
+    left: -267px;
+}
+
+.daniel {
+    background: url('../img/scroll2.png');
+    top: 2648px;
+    width: 267px;
+    height: 495px;
+    position: absolute;
+    left: 1600px;
 }
