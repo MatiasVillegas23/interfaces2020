@@ -80,12 +80,24 @@ $(document).ready(function() {
     let daniel = document.querySelector(".daniel");
     window.addEventListener("scroll", function() {
         //console.log(document.documentElement.scrollTop);
-        if (document.documentElement.scrollTop > 2000 && document.documentElement.scrollTop < 2150) {
+        if (document.documentElement.scrollTop > 2000 && document.documentElement.scrollTop < 2130) {
+            daniel.hidden = false;
             //console.log("entre");
             //console.log(window.pageYOffset);
             //daniel.hidden = false;
-            johnny.style.left = window.pageYOffset - 2191 + "px";
-            daniel.style.left = -window.pageYOffset + 3500 + "px";
+            johnny.style.left = window.pageYOffset - 1991 + "px";
+            daniel.style.left = -window.pageYOffset + 3240 + "px";
         }
+    });
+
+    let botonEnviar = $("#formEnviar");
+
+    botonEnviar.on("click", function(event) {
+        event.preventDefault();
+        $("#formEnviar").hide(1000);
+        $("#formEnviar").show(1000);
+        setTimeout(function() {
+            document.querySelector("#formEnviar").innerHTML = "Enviado!";
+        }, 500)
     });
 });

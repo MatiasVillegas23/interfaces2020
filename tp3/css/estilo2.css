@@ -1,67 +1,38 @@
-.acordeon-container {
-    width: 50%;
-    margin-top: 120px;
-    margin-left: auto;
-    margin-right: auto;
+body {
+    margin: 0;
+    padding: 0;
 }
 
-.acordeon {
-    background-color: #FFF100;
-    color: rgb(8, 8, 8);
-    cursor: pointer;
-    padding: 18px;
-    border: none;
-    text-align: left;
+.cuerpo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #0B0B0B;
+    height: 100vh;
+}
+
+label {
     font-family: "open sans";
-    outline: none;
     font-size: 20px;
-    transition: 0.4s;
-    overflow: hidden;
-    width: 100%;
+    color: #FFF100;
 }
 
-.activa,
-.acordeon:hover {
+.btn-light {
+    font-family: "open sans";
+    background-color: #FFF100;
+    font-size: 20px;
+}
+
+.btn-light:hover {
     background-color: #C6BB00;
 }
 
-.acordeon:after {
-    content: '\002B';
-    color: #0B0B0B;
-    font-weight: bold;
-    float: right;
-    margin-left: 5px;
-}
-
-.active:after {
-    content: "\2212";
-}
-
-.panel {
-    padding: 0 18px;
-    background-color: #C6BB00;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.2s ease-out;
-}
-
-p {
-    font-size: 18px;
-}
-
-.imagenAcordeon {
+.form-control {
     width: 250px;
-    height: 250px;
-    left: 5px;
-    top: 5px;
-    bottom: 10px;
-    background-size: 300px 300px;
-    background-position: center center;
-    z-index: 2;
-    transition: .5s;
+    -webkit-transition: width .35s ease-in-out;
+    transition: width .35s ease-in-out;
 }
 
-.imagenAcordeon:hover {
-    transform: scale(1.1);
-    transition: .5s;
+.form-control:focus {
+    width: 280px;
 }
