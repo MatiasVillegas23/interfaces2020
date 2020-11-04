@@ -10,6 +10,7 @@
 body {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 footer {
@@ -515,4 +516,57 @@ label {
 
 .form-control:focus {
     width: 280px;
+}
+
+.hero {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url("../img/dojo.jpg");
+}
+
+.hero .img1 {
+    position: absolute;
+    top: 100px;
+    left: 50px;
+    object-fit: cover;
+}
+
+.hero .img2 {
+    position: absolute;
+    top: 320px;
+    left: 1225px;
+    object-fit: cover;
+}
+
+.hero .img3 {
+    position: absolute;
+    top: 600px;
+    left: 100px;
+    object-fit: cover;
+}
+
+.hero .layer-center {
+    position: relative;
+    background-image: url("../img/texto.png");
+    width: 937px;
+    height: 309px;
+    object-fit: cover;
+}
+
+#tituloHero {
+    animation: aparecer 3.5s ease-in-out;
+}
+
+@keyframes aparecer {
+    0% {
+        transform: scale(50%);
+    }
+    100% {
+        transform: scale(100%);
+    }
 }
